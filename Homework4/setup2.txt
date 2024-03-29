@@ -1,0 +1,122 @@
+Salutare,
+Ca pregatiri pentru laborator o sa aveti nevoie de:
+
+
+
+- Python 3.6 64 bit
+
+Doar 3.6 64 bit deoarece unele libraries nu sunt compatibile cu versiuni mai noi de Python, cel putin nu inca. 
+
+Pentru a verifica ce versiune de Python aveti scrieti "python" in cmd. Se va porni interpretorul python (daca primiti o eroare vedeti al doilea paragraf de la instructiunile pentru Numpy de mai jos) si se vor afisa cateva informatii despre ce versiune de Python aveti instalata:
+
+Python 3.6.8 (v3.6.5:f59c0932b4, Mar 28 2018, 17:00:18) [MSC v.1900 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+>>>
+
+La inceputul randului vi se va spune ce versiune de Python aveti iar putin mai incolo veti gasi aceasta secventa intre paranteze patrate: "[MSC v.1900 64 bit (AMD64)]" dupa cum vedeti scrie "64 bit". Daca nu aveti python 3.6 64 bit va trebui sa il instalati sau sanse de 90%+ sa nu puteti face laboratorul si sa sjungeti sa il instalati la laborator si sa pierdeti timp.
+
+Puteti descarca Python 3.6 de la link-ul de mai jos, dati scroll in jos si folositi link-ul de download "Windows x86-64 executable installer".
+
+Cand instalati Python trebuie sa selectati "Custom Install" (sau asa ceva) la inceputul instalarii. In timpul instalarii veti avea o casuta care va intreba daca doriti sa instalati ceva numit "pip". Trebuie bifata. De asemenea cand instalati Python trebuie bifata casuta "Add to PATH" (sau ceva asemanator).
+
+Tineti minte unde ati instalat Python (salvati intr-un fisier .txt).
+
+https://www.python.org/downloads/release/python-368/
+
+
+
+- Numpy
+
+Numpy este un library de lucrat cu matrici. Probabil unii il folositi deja. Pentru ceilalti, pe scurt aveti deja implementata o clasa matrice, ca sa nu folositi lista de liste, si aveti deja functii pentru cam tot ce puteti avea nevoie asupra unei matrici, slice pentru a lua doar anumite coloane sau linii etc.
+
+Pentru a instala Numpy cel mai usor este sa folositi pip. Pip este un package manager pentru python, cu alte cuvinte se poate conecta la repo-ul oficial de libraries de python si va instaleaza el un library si toate dependentele sale.
+
+Pentru a instala Numpy cu pip trebuie doar rulat in cmd cu drepturi de admin (preferabil NU in consola cmd din pycharm deoarece aceasta mai are buguri):
+
+pip install numpy
+
+Pentru cei care doresc sa termine repede la laborator ar ajuta sa dati un ochi pe un basic tutorial de numpy sa nu va bateti apoi cu chestii simple gen cum selectez doar coloanele de la 2 la 4 si randurile de la 7 la 9 dintr-o matrice.
+
+https://docs.scipy.org/doc/numpy/user/quickstart.html
+
+
+
+- OpenCV
+
+OpenCV este cel mai mare library de computer vision la ora actuala. Este scris in C++ dar il putem chema din Python, insa datorita faptului ca este scris in C++ este mai "mofturos" cu ce versiuni de Python accepta.
+
+Pentru a instala OpenCV cu pip trebuie doar rulat in cmd:
+
+pip install opencv-python
+
+sau (daca nu merge, da eroare sau dureaza >30 min, optiunea 1)
+
+instalati C++ redistributable 2015: https://www.microsoft.com/en-us/download/details.aspx?id=48145
+(anumite parti din opencv trebuie compilate pe PC-ul pe care se va rula codul asa ca ne trebuie un compilator)
+
+sau (daca tot nu merge, da eroare sau dureaza >30 min, optiunea 2)
+
+python -m pip install --upgrade pip  <--- upgrade la versiunea de pip, e posibil sa contina un library installer mai nou
+
+sau (daca TOT nu merge, da eroare sau dureaza >30 min, optiunea 3)
+
+pip install opencv-python==4.5.5.62  <--- versiunea de opencv care functiona 99% la laboratorul din 2021-2022
+
+Pentru a testa ca totul merge ok puteti lua un fisier .mp4 la alegere (just get something off YouTube) si sa ii dati un "play" folosind OpenCv cu bucatica asta de cod din imaginea din primul exercitiu de la laborator. In acel string puneti voi ce fisier aveti voi.
+
+
+- Crearea de proiecte in Pycharm
+
+Cand creati un proiect in Pycharm trebuie sa NU il creati cu virtual enironment.
+
+Folositi link-ul de mai jos pentru a vedea cum se creeaza un proiect (marea majoritate din voi stiti deja cum se creaza un proiect, insa trebuie selectata o anumita setare in procesul de create a proiectului):
+
+https://www.jetbrains.com/help/pycharm/creating-empty-project.html
+
+ATENTIE: La pasul 3 trebuie selectat "Existing interpreter / Previously Configured Interpreter". 
+
+Daca in lista de la "Existing interpreter / Previously Configured Interpreter" nu aveti nimic atunci trebuie sa ii spuneti Pycharm-ului unde aveti Python-ul instalat:
+
+1. Langa lista respectiva, la dreapta, aveti un mic buton "...". Click pe el. Alternativ e posibil in loc de "..." sa aveti un buton de "Add Interpreter > Add Local Interpreter".
+
+2. In fereastra care se deschide, in stanga, click pe "System Interpreter".
+
+3. In lista din centru vedeti daca exista python 3.6. Daca exista, selectatil si mergeti la pasul 4.
+3.1. Daca nu exista, langa lista, la dreapta ei, aveti un mic buton "...". Click pe el.
+3.2. Navigati pana in folder-ul unde aveti Python instalat. Va trebui sa selectati "python.exe".
+3.3. Dati OK pentru a selecta "python.exe" dupa ce l-ati gasit. Apoi OK la fereastra anterioara. Acum ar trebui sa aveti un interpretor Python in lista de la "Existing interpreter / Previously Confiruged Interpreter".
+
+4. Dati OK la tot si apoi Create / Create Project.
+
+
+
+Daca install-ul library-ului OpenCV pare ca a mers cu succes dar nu va este recunoscut in PyCharm instructiunea "import cv2" atunci, folosind un cmd cu drepturi de admin (NU cmd-ul din pycharm):
+
+1. Verificam versiunea de python pentru care pip instaleaza library-ul:
+
+pip -V  <--- V mare, nu v mic. 
+
+1.1. Daca apare ca pip lucreaza cu python 3.6 atunci
+
+pip freeze
+
+Asta va printa o lista cu toate libraries instalate curent. Cautati in lista library-ul OpenCV.
+
+Daca nu exista atunci incercati sa instalati din nou OpenCV, daca nu se rezolva semnalati-ne asta ca sa investigam impreuna.
+Daca exista atunci verificati ca ati creat corect proiectul pycharm, daca nu se rezolva semnalati-ne asta ca sa investigam impreuna.
+
+1.2. Daca apare alta versiune de python inafara de 3.6 atunci nu chemam pip-ul care trebuie.
+
+In primul rand trebuie sa va asigurati ca atunci cand ati instalat python ati bifat "install pip" si "add python to PATH". Daca nu sunteti siguri, reinstall python.
+
+a) Daca tot nu se rezolva, apasati Start. 
+b) Scrieti in casuta de cautare "environment".
+c) Click pe "Edit System Environment Variables".
+d) Click in dreapta jos pe "Environment Variables".
+e) In prima lista, in casuta de sus, cautati variabila "Path" sau "PATH". Dati "Edit".
+f) Ar trebui sa aveti 2 randuri cu folderul de instalare al pythonului.
+   Copiati aceste 2 randuri intr-un notepad si inchideti fereastra deschisa de "Edit".
+g) Gasiti "Path/PATH" in lista de jos din fereastra cu environment variables. Dati "Edit".
+h) Folosind "Add/New" adaugati pe primele 2 pozitii din lista ferestrei de "Edit" cele doua cai care contin folderul de instalare al python (copiate la punctul anterior).
+i) "Apply" si apoi "Ok" in fiecare fereastra pentru a salva schimbarile. 
+j) Restart la cmd-ul cu drepturi de admin, verificati ca acum pip va instala libraries pentru versiunea corecta de python (punctul 1 de mai sus) si reincercati sa instalati opencv.
