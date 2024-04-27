@@ -1,7 +1,9 @@
 import cv2
 import numpy as np
 
-cam = cv2.VideoCapture('C:/Users/Ione/Downloads/Lane_Detection_Test_Video_01.mp4')
+from nextlab.object_socket import ObjectReceiverSocket
+
+socket = ObjectReceiverSocket('localhost', 5000, print_when_connecting_to_sender=True, print_when_receiving_object=True)
 
 left_top_point = (0, 0)
 left_bottom_point = (0, 0)
@@ -9,14 +11,14 @@ right_top_point = (0, 0)
 right_bottom_point = (0, 0)
 
 while True:
-    ret, frame = cam.read()
+    ret, frame = socket.recv_object()
     if ret is False:
         break
 
     # ex2
     original_height, original_width, _ = frame.shape
-    new_width = 350
-    new_height = 250
+    new_width = original_width // 4
+    new_height = original_height // 4
     resized_frame = cv2.resize(frame, (new_width, new_height))
     cv2.imshow('Resized', resized_frame)
 
@@ -26,12 +28,13 @@ while True:
 
     # ex4
     trapezoid_frame = np.zeros_like(gray_frame)
-    pt_upper_right = (int(new_width * 0.55), int(new_height * 0.75))
-    pt_upper_left = (int(new_width * 0.45), int(new_height * 0.75))
+    pt_upper_right = (int(new_width * 0.55), int(new_height * 0.74))
+    pt_upper_left = (int(new_width * 0.45), int(new_height * 0.74))
     pt_bottom_left = (int(new_width * 0.1), new_height)
     pt_bottom_right = (int(new_width * 0.9), new_height)
-    pts = np.array([pt_upper_right, pt_upper_left, pt_bottom_left, pt_bottom_right], dtype=np.int32)
-    cv2.fillConvexPoly(trapezoid_frame, pts, 1)
+
+    points_of_the_trapezoid = np.array([pt_upper_right, pt_upper_left, pt_bottom_left, pt_bottom_right], dtype=np.int32)
+    cv2.fillConvexPoly(trapezoid_frame, points_of_the_trapezoid, 1)
     road_frame = gray_frame * trapezoid_frame
     cv2.imshow('Road', road_frame)
 
@@ -40,15 +43,15 @@ while True:
     upper_left = (0, 0)
     bottom_left = (0, new_height)
     bottom_right = (new_width, new_height)
-    trapezoid_bounds = np.array([upper_right, upper_left, bottom_left, bottom_right])
-    trapezoid_bounds = np.float32(trapezoid_bounds)
-    pts = np.float32(pts)
-    magic_matrix = cv2.getPerspectiveTransform(pts, trapezoid_bounds)
+    points_of_the_screen = np.array([upper_right, upper_left, bottom_left, bottom_right])
+    points_of_the_screen = np.float32(points_of_the_screen)
+    points_of_the_trapezoid = np.float32(points_of_the_trapezoid)
+    magic_matrix = cv2.getPerspectiveTransform(points_of_the_trapezoid, points_of_the_screen)
     top_down_frame = cv2.warpPerspective(road_frame, magic_matrix, (new_width, new_height))
     cv2.imshow('Top-down', top_down_frame)
 
     # ex6
-    blured_frame = cv2.blur(top_down_frame, ksize=(5, 5))
+    blured_frame = cv2.blur(top_down_frame, (5, 5))
     cv2.imshow('Blur', blured_frame)
 
     # ex7
@@ -82,9 +85,6 @@ while True:
     right_xs, right_ys = right_indexes[:, 1] - midpoint, right_indexes[:, 0]
 
     # ex10
-
-    # left_line = np.polynomial.polynomial.polyfit(left_xs, left_ys, deg=1)
-    # right_line = np.polynomial.polynomial.polyfit(right_xs, right_ys, deg=1)
     if left_xs.size > 0 and left_ys.size > 0:
         left_line = np.polynomial.polynomial.polyfit(left_xs, left_ys, deg=1)
     else:
@@ -127,7 +127,7 @@ while True:
     blank = np.zeros((new_height, new_width), dtype=np.uint8)
     cv2.line(blank, left_top_point, left_bottom_point, (255, 0, 0), 3)
 
-    magic_matrix = cv2.getPerspectiveTransform(trapezoid_bounds, pts)
+    magic_matrix = cv2.getPerspectiveTransform(points_of_the_screen, points_of_the_trapezoid)
     final_left = cv2.warpPerspective(blank, magic_matrix, (new_width, new_height))
 
     cv2.imshow('Final Left', final_left)
@@ -138,7 +138,7 @@ while True:
     blank = np.zeros((new_height, new_width), dtype=np.uint8)
     cv2.line(blank, right_top_point, right_bottom_point, (255, 0, 0), 3)
 
-    magic_matrix = cv2.getPerspectiveTransform(trapezoid_bounds, pts)
+    magic_matrix = cv2.getPerspectiveTransform(points_of_the_screen, points_of_the_trapezoid)
     final_right = cv2.warpPerspective(blank, magic_matrix, (new_width, new_height))
 
     cv2.imshow('Final Right', final_right)
@@ -156,5 +156,5 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-cam.release()
+# cam.release()
 cv2.destroyAllWindows()
